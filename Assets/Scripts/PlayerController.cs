@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         
-        // Find the main camera in the scene automatically
+        // Sahnede "Main Camera" etiketli ana kamerayı otomatik bulur
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         moveInput = Vector3.zero;
 
-        // Clean input check using Unity's official KeyCode system
+        // Klavyeden yön girdilerini alıyoruz
         if (Input.GetKey(upKey))    moveInput.z = 1f;
         if (Input.GetKey(downKey))  moveInput.z = -1f;
         if (Input.GetKey(leftKey))  moveInput.x = -1f;
@@ -39,21 +39,25 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (cameraTransform == null) return;
+        if (cameraTransform == null || moveInput == Vector3.zero) return;
 
-        // Get camera forward and right vectors on the horizontal plane
+        // Kameranın bakış yönlerini alıyoruz
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
 
+        // Karakterin yukarı-aşağı (Y ekseninde) uçup gitmesini engellemek için Y eksenini sıfırlıyoruz
         camForward.y = 0f;
         camRight.y = 0f;
+
+        // Yön vektörlerini tekrar 1 birim uzunluğa eşitliyoruz (Normalize)
         camForward.Normalize();
         camRight.Normalize();
 
-        // Calculate movement relative to the camera's point of view
+        // Girdiyi kameranın yön vektörleriyle çarparak kameraya göre yönümüzü belirliyoruz
         Vector3 relativeMovement = (camForward * moveInput.z) + (camRight * moveInput.x);
 
-        // Apply physics movement smoothly
-        rb.MovePosition(rb.position + relativeMovement.normalized * moveSpeed * Time.fixedDeltaTime);
+        // Hareketi uyguluyoruz
+        Vector3 targetPosition = rb.position + relativeMovement.normalized * moveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(targetPosition);
     }
 }
