@@ -114,17 +114,17 @@ public class FrogController : MonoBehaviour
     {
         if (isCharging && isGrounded)
         {
-            rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         }
         else
         {
             Vector3 velocity = moveDirection * moveSpeed;
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+            rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
         }
 
-        if (rb.velocity.y < 0)
+        if (rb.linearVelocity.y < 0)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
     }
 
@@ -136,7 +136,7 @@ public class FrogController : MonoBehaviour
         Vector3 jumpVelocity = moveDirection * moveSpeed; 
         jumpVelocity.y = finalJumpForce;
 
-        rb.velocity = jumpVelocity;
+        rb.linearVelocity = jumpVelocity;
         isCharging = false;
     }
 
